@@ -2,326 +2,317 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>捕鱼达人</title>
+	<title>Document</title>
 	<style>
-	*{
-		margin: 0px;
-		padding: 0px;
-	}
-	body{
-		background: black;
-	}
-	#canvas{
-		background-image: url(Images/bg.jpg);
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: 100% 100%;
-	}
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background-image:url('Images/bg2.jpg');
+			background-size: 100%;
+			background-position: left;
+			background-repeat: repeat-y;
+
+		}
+		#yxbox{
+			padding: 0;
+			margin:0 auto;
+			margin-top:50px;
+			list-style: none;
+			position:relative;
+		}
+		#yxbox li{
+			width:50px;
+			height:50px;
+			float: left;
+		}
+		#yxbox .pos0{
+			background:url('Images/bg_tree.png') no-repeat;
+		}
+		#yxbox .pos1{
+			background:url('Images/wall.jpg') no-repeat;
+		}
+		#yxbox .pos2{
+			background:url('Images/allow_bg.jpg') no-repeat;
+		}
+		#yxbox .pos3{
+			background:url('Images/target.jpg') no-repeat;
+		}
+		#yxbox .person1,#yxbox .person2,#yxbox .person3,#yxbox .person4{
+			width:50px;
+			height:50px;
+			position:absolute;
+			background-image:url('Images/person.png');
+			background-repeat: no-repeat;
+		}
+		#yxbox .box{
+			width:50px;
+			height:50px;
+			position:absolute;
+			background-image:url('Images/box.jpg');
+			background-repeat: no-repeat;
+		}
+		#yxbox .person1{
+			background-position:0;
+		}
+		#yxbox .person2{
+			background-position: -50px 0;
+		}
+		#yxbox .person3{
+			background-position: -100px 0;
+		}
+		#yxbox .person4{
+			background-position: -150px 0;
+		}
+
 	</style>
 </head>
 <body>
-	<canvas id="canvas" width="900" height="800">
-		您的浏览器太low了！
-	</canvas>
-	<a href="bird/index.html">下一个游戏</a>
+	<ul id="yxbox">
+		<a href="index.html">上一个游戏</a>
+	</ul>
 	<script>
-	 function loadImg(arr,fn){
-	 	var result = {};
-	 	var iNow = 0;
-	 	for(var i =0;i<arr.length;i++){
-	 		var oImage = new Image();
-	 		var tmp = arr[i].split('.');
-	 		result[tmp[0]] = oImage;
-	 		oImage.onload = function(){
-				iNow++;
-				if(iNow>=arr.length){
-					fn(result);
+		BoxYouXi = {
+			oP:null,
+			history:[],
+			target:{},
+			boxs:[],
+			gk:[
+				{
+					map:[
+						0,0,1,1,1,0,0,0,
+						0,1,3,3,1,1,1,1,
+						0,1,2,2,3,2,2,1,
+						1,2,2,2,1,2,1,0,
+						1,2,2,2,2,3,1,0,
+						1,2,2,2,2,2,2,1,
+						0,1,2,2,2,2,1,0,
+						0,0,1,1,1,1,1,0
+					],
+					boxPos:[
+						{x:5,y:3},
+						{x:3,y:5},
+						{x:2,y:4},
+						{x:4,y:5}
+					],
+					personPos:{x:4,y:6},
+				},
+				{
+					map:[
+						0,0,1,1,1,0,0,0,
+						0,1,3,3,1,1,1,1,
+						0,1,2,2,2,2,2,1,
+						1,2,2,2,1,2,2,1,
+						1,2,2,1,2,3,2,1,
+						1,2,2,2,2,2,2,1,
+						1,3,2,2,2,2,1,0,
+						0,1,1,1,1,1,1,0
+					],
+					boxPos:[
+						{x:5,y:3},
+						{x:3,y:5},
+						{x:2,y:4},
+						{x:4,y:5}
+					],
+					personPos:{x:4,y:6},
 				}
-	 		}
-	 		oImage.src = 'Images/'+arr[i];
-	 	}
-	 }
-	 window.onload = function(){
-	 	var oCans = document.getElementById('canvas');
-	 	var curW = document.documentElement.clientWidth || document.body.clientWidth;
-	 	var curH = document.documentElement.clientHeight || document.body.clientHeight;
-	 	var intger = '000000';
-	 	var intgerArr = getInteger(0);
-	 	var i=0;
-	 	
-	 	oCans.width = curW-10;
-	 	oCans.height = curH-10;
-	 	var oGc = oCans.getContext('2d');
-	 	loadImg(['pig.png','gun.png','zidan.png','gold.png','fish1.png','fish1_1.png','fish2.png','fish2_1.png','fish3.png','fish3_1.png','integer.png','bottom.jpg'],function(result){
-	 		//炮的运动
-	 		oGc.drawImage(result['gun'],0,0,64,64,oCans.offsetWidth/2-32,oCans.offsetHeight-70,64,64);
-	 		var gun = {};
-	 		var pig = {};
-	 		var goldArr = [];
-	 		var goldRun = [];
-	 		var zidanArr = [];
-	 		var bottomL = intgerArr.length*80;
-	 		gun.x = oCans.offsetWidth/2;
-	 		gun.y = oCans.offsetHeight-70;
-	 		pig.arcX = result['pig'].width/2;
-	 		pig.arcY = (oCans.offsetHeight-result['pig'].height/2);
-	 		pig.curPoy = 0.5;
-	 		oCans.onmouseover = function(){
-	 			this.onmousemove = function(ev){
-	 				var oEvent = ev || event;
-	 				var iMx = oEvent.layerX;
-	 				var iMy = oEvent.layerY;
-	 				gun.hudu = -(Math.atan2(iMx-gun.x,iMy-gun.y)+180*Math.PI/180);
-	 				//炮
-		 			oGc.save();
-	 				oGc.translate(gun.x,gun.y+32);//设置原点
-	 				oGc.rotate(gun.hudu);
-	 				oGc.drawImage(result['gun'],0,0,64,64,-32,-32,64,64);
-					oGc.restore();
-	 			}
-	 			this.onmousedown = function(ev){
-	 				var oEvent = ev || event;
-	 				var iCx = oEvent.layerX;
-	 				var iCy = oEvent.layerY;
-	 				zidanArr.push(
-						{
-							x:gun.x,
-							y:gun.y,
-							startX:iCx,
-							startY:iCy,
-							iRatio:0,
-							hudu:gun.hudu,
-							curPoy:1
+			],
+			createMap:function(gk){
+				document.title = '当前第'+(this.num+1)+'关';
+				this.colsNum = Math.sqrt(gk.map.length);
+				this.oParent.style.width = this.colsNum*50+'px';
+				for(var i=0;i<gk.map.length;i++){
+					var oLi = document.createElement('li');
+					oLi.className = 'pos'+gk.map[i];
+					this.oParent.appendChild(oLi);
+					if(gk.map[i]==3){
+						this.target[oLi.offsetLeft+'_'+oLi.offsetTop] = '1';
+					}
+				}
+				this.createMan(gk);
+			},
+			createMan:function(gk){
+				this.oP = document.createElement('div');
+				this.oP.className = 'person2';
+				this.oP.x = gk.personPos.x;
+				this.oP.y = gk.personPos.y;
+				this.oP.style.left = this.oP.x*50+'px';
+				this.oP.style.top = this.oP.y*50+'px';
+				this.oParent.appendChild(this.oP);
+				this.createBox(gk);
+			},
+			createBox:function(gk){
+				for(var i=0;i<gk.boxPos.length;i++){
+					var oDiv = document.createElement('div');
+					oDiv.className = 'box';
+					oDiv.style.left = gk.boxPos[i].x*50+'px';
+					oDiv.style.top = gk.boxPos[i].y*50+'px';
+					this.oParent.appendChild(oDiv);
+					this.boxs.push(oDiv);
+				}
+			},
+			personRun:function(iJons){
+				var gk = this.gk[this.num];
+				var map = gk.map;
+				var x = this.oP.x+iJons.x;
+				var y = this.oP.y+iJons.y;
+				var bx = x+iJons.x;
+				var by = y+iJons.y;
+				if(map[this.colsNum*y+x]==1){
+					return;
+				}
+				this.oP.x = x;
+				this.oP.y = y;
+				this.oP.style.left = this.oP.x*50+'px';
+				this.oP.style.top = this.oP.y*50+'px';
+				for(var i=0;i<this.boxs.length;i++){
+					if(this.impactCheck(this.oP,this.boxs[i])){
+						if(map[this.colsNum*by+bx] == 1){
+							this.oP.x = x-iJons.x;
+							this.oP.y = y-iJons.y;
+							this.oP.style.left = this.oP.x*50+'px';
+							this.oP.style.top = this.oP.y*50+'px';
+							return;
 						}
-	 				);
-	 			}
-	 		}
-	 		//画
-	 		setInterval(function(){
-	 			oGc.clearRect(0,0,oCans.offsetWidth,oCans.offsetHeight);
-	 			
-//	 			document.title = zidanArr.length+'/'+fashArr.length+'/'+goldArr.length+'/'+goldRun.length;
-				
-
-	 			//子弹
-	 			for(i=0;i<zidanArr.length;i++){
-	 				var theY = Math.floor(24-Math.cos(zidanArr[i].hudu)*24-10);
-	 				var theX = Math.ceil(Math.sin(zidanArr[i].hudu)*24);
-	 				var arcX = zidanArr[i].x+theX;
-	 				var arcY = zidanArr[i].y+theY;
-	 				zidanArr[i].iRatio = (zidanArr[i].startX-arcX)/(zidanArr[i].startY-arcY);
-					
-					oGc.save();
-	 				oGc.translate(arcX,arcY);//设置原点
-	 				oGc.rotate(zidanArr[i].hudu);
-	 				oGc.drawImage(result['zidan'],0,parseInt(zidanArr[i].curPoy)*48,30,48,theX-15,theY-24,30,48);
-					oGc.restore();
-					
-					zidanArr[i].y -= 6;
-					zidanArr[i].x -= 6*zidanArr[i].iRatio.toFixed(2);
-					zidanArr[i].curPoy += 0.3;
-					if(zidanArr[i].curPoy>3){
-						zidanArr[i].curPoy = 0;
-					}
-					if(zidanArr[i].x<=0 || zidanArr[i].x>=oCans.offsetWidth || zidanArr[i].y<=0 || zidanArr[i].y>=oCans.offsetHeight){
-						zidanArr.splice(i,1);
-						i--;
-					}
-	 			}
-
-				//炮
-	 			oGc.save();
- 				oGc.translate(gun.x,gun.y+32);//设置原点
- 				oGc.rotate(gun.hudu);
- 				oGc.drawImage(result['gun'],0,0,64,64,-32,-32,64,64);
-				oGc.restore();
-	 			//鱼
-	 			for(i=0;i<fashArr.length;i++){
-	 				
-	 				var speedX = 2;
-	 				
-	 				if(fashArr[i].type==1){
-	 					speedX = -2;
-	 				}
-	 				var speedY = parseFloat(speedX*Math.tan(fashArr[i].hudu));
-	 				fashArr[i].x = fashArr[i].x+speedX;
-	 				fashArr[i].y = fashArr[i].y+speedY;
-	 				
-	 				oGc.save();
-	 				oGc.translate(fashArr[i].x,fashArr[i].y);
-	 				oGc.rotate(fashArr[i].hudu);
-					oGc.drawImage(result[fashArr[i].name],0,parseInt(fashArr[i].curPoy)*fashArr[i].h,fashArr[i].w,fashArr[i].h,speedX,speedY,fashArr[i].w,fashArr[i].h);
-					oGc.restore();
-	 				fashArr[i].curPoy += fashArr[i].step;
-	 				if(fashArr[i].curPoy>fashArr[i].endPoy){
- 						fashArr[i].curPoy = 0;
- 					}
-	 				if(fashArr[i].type == 0 && fashArr[i].x>oCans.offsetWidth){
-	 					fashArr.splice(i,1);
-	 					i--;
-	 				}else if(fashArr[i].x<-fashArr[i].w){
-	 					fashArr.splice(i,1);
-	 					i--;
-	 				}
-	 			}
-
-	 			// 底边
-				oGc.drawImage(result['bottom'],0,0,result['bottom'].width,result['bottom'].height,bottomL,0,(intgerArr.length-1)*result['integer'].height/10,result['integer'].height/10+5);
-				
-	 			//打中
-	 			for(i=0;i<zidanArr.length;i++){
-	 				for(var n=0;n<fashArr.length;n++){
-						if(collideTest(zidanArr[i].x,zidanArr[i].y,30,46,fashArr[n].x,fashArr[n].y,fashArr[n].w,fashArr[n].h)){
-							var goldTmp = {
-								x:fashArr[n].x,
-								y:fashArr[n].y,
-								curPoy:0,
-							};
-							intgerArr = getInteger(fashArr[n].intger);//设置积分
-							goldArr.push(goldTmp);
-							fashArr.splice(n,1);
-							zidanArr.splice(i,1);
-							i--;
-							break;
+						this.boxs[i].style.left = bx*50+'px';
+						this.boxs[i].style.top = by*50+'px';
+						for(var n=0;n<this.boxs.length;n++){
+							if(this.boxs[i]!=this.boxs[n] && this.impactCheck(this.boxs[i],this.boxs[n])){
+								this.oP.x = x-iJons.x;
+								this.oP.y = y-iJons.y;
+								this.oP.style.left = this.oP.x*50+'px';
+								this.oP.style.top = this.oP.y*50+'px';
+								this.boxs[i].style.left = (bx-iJons.x)*50+'px';
+								this.boxs[i].style.top = (by-iJons.y)*50+'px';
+								return;
+							}
 						}
+						if(this.target[this.boxs[i].offsetLeft+'_'+this.boxs[i].offsetTop]){
+							this.boxs[i].ok = true;
+							var sucLen = 0;
+							for(var n=0;n<this.boxs.length;n++){
+								if(this.boxs[n].ok){
+									sucLen++;
+								}
+							}
+							if(sucLen==this.boxs.length)this.nextLevel();
+						}else{
+							this.boxs[i].ok = false;
+						}
+						break;
 					}
-	 			}
-	 			
-	 			//金币
-	 			for(i=0;i<goldArr.length;i++){
-	 				oGc.drawImage(result['gold'],0,parseInt(goldArr[i].curPoy)*51,49,51,goldArr[i].x,goldArr[i].y,49,51);
-	 				if(goldArr[i].curPoy>=5){
-						goldRun.push({
-							curX:goldArr[i].x,
-							curY:goldArr[i].y,
-						});
-						goldArr.splice(i,1);
-					}else{
-						goldArr[i].curPoy += 0.5;
+				}
+				if(this.preTmp)this.history.push(this.preTmp);
+				this.preTmp = {
+					boxPos:[]
+				};
+				this.preTmp.personPos = {
+					x:this.oP.x,
+					y:this.oP.y
+				}
+				for(var i=0;i<this.boxs.length;i++){
+					this.preTmp.boxPos[i] = {
+						x:this.boxs[i].offsetLeft,
+						y:this.boxs[i].offsetTop
 					}
-	 			}
-	 			
-	 			//金币运动
-	 			
-	 			if(pig.curPoy>0.5){
-	 				pig.curPoy -= 0.08;
-	 			}else{
-	 				pig.curPoy = 0;
-	 			}
-	 			
-	 			for(i=0;i<goldRun.length;i++){
-	 				oGc.drawImage(result['gold'],0,0,49,51,goldRun[i].curX,goldRun[i].curY,49,51);
-	 				var speedX = parseInt((pig.arcX-goldRun[i].curX)*0.2);
-	 				var speedY = parseInt((pig.arcY-20-goldRun[i].curY)*0.2);
-		 				goldRun[i].curX += speedX;
-		 				goldRun[i].curY += speedY;
-		 				if(speedX==0){
-		 					goldRun.splice(i,1);
-		 					i--;
-		 					pig.curPoy = 1;
-		 				}
-	 			}
-	 			
-	 			//pig
-	 			oGc.drawImage(result['pig'],0,Math.round(pig.curPoy)*90,90,90,0,oCans.offsetHeight-90,90,90);
+				}
+				if(this.history.length>20){
+					this.history.splice(0,1);
+				}
+			},
+			nextLevel:function(){
+				this.history = [];
+				this.target = [];
+				this.boxs = [];
+				this.oParent.innerHTML = '';
+				this.num++;
+				if(!this.gk[this.num]){
+					alert('恭喜你已经通过了所有关卡，可以下山了');
+					return false;
+				}
+				this.createMap(this.gk[this.num]);
+			},
+			impactCheck:function(obj1,obj2){//碰撞检测
+				var l1 = obj1.offsetLeft;
+				var t1 = obj1.offsetTop;
+				var r1 = l1+obj1.offsetWidth;
+				var b1 = t1+obj1.offsetHeight;
+				var l2 = obj2.offsetLeft;
+				var t2 = obj2.offsetTop;
+				var r2 = l2+obj2.offsetWidth;
+				var b2 = t2+obj2.offsetHeight;
+				if(b1<=t2 || l1>=r2 || t1>=b2 || r1<=l2){
+					return false;
+				}else{
+					return true;
+				}
+			},
+			backPrevStep:function(){
+				var prevIndex = this.history.length-1;
+				if(!this.history[prevIndex])return;
+				var perPos = this.history[prevIndex].personPos;
+				var boxPos = this.history[prevIndex].boxPos;
+				this.history.splice(prevIndex,1);
+				this.oP.x = perPos.x;
+				this.oP.y = perPos.y;
+				this.oP.style.left = this.oP.x*50+'px';
+				this.oP.style.top = this.oP.y*50+'px';
+				for(var i=0;i<boxPos.length;i++){
+					this.boxs[i].style.left = boxPos[i].x+'px';
+					this.boxs[i].style.top = boxPos[i].y+'px';
+				}
 
-	 			//积分
-	 			for(i=0;i<intgerArr.length;i++){
-	 				oGc.drawImage(result['integer'],0,intgerArr[i].old,result['integer'].width,result['integer'].height/10,bottomL+(i*result['integer'].width),5,result['integer'].width,result['integer'].height/10);
-	 				var intSpeed = (intgerArr[i].number-intgerArr[i].old)/8;
-	 					intSpeed = intSpeed>0?Math.ceil(intSpeed):Math.floor(intSpeed);
-	 					intgerArr[i].old += intSpeed;
-	 			}
-	 			
-
-	 		},1000/60);
-	 	});
-	 	
-	 	var fashArr = [];
-	 	var arr = [
-	 				{
-	 					name:'fish1',
-	 					endPoy:12,
-	 					step:0.1,
-	 					w:80,
-	 					h:80,
-	 					intger:2
-	 				},
-	 				{
-	 					name:'fish2',
-	 					endPoy:8,
-	 					step:0.1,
-	 					w:60,
-	 					h:64,
-	 					intger:3
-	 				},
-	 				{
-	 					name:'fish3',
-	 					endPoy:9,
-	 					step:0.1,
-	 					w:50,
-	 					h:56,
-	 					intger:1
-	 				}
-	 			]
-	 	setInterval(function(){
-	 			var rand = Math.round(Math.random()*(arr.length-1));
-	 			var iType = Math.round(Math.random()*1);
-	 			var tmp = {
-	 				x:-arr[rand].w,
-	 				y:oCans.offsetHeight/2-150,
-	 				hudu:(Math.PI/180)*(parseInt(Math.random()*60-20)),
-	 				curPoy:0,
-	 				step:arr[rand].step,
-	 				endPoy:arr[rand].endPoy,
-	 				name:arr[rand].name,
-	 				w:arr[rand].w,
-					h:arr[rand].h,
-					intger:arr[rand].intger,
-					type:0
-	 			};
-	 			if(iType===1){
-	 				
-	 				tmp.type = 1;
-	 				tmp.x = oCans.offsetWidth+tmp.w;
-	 				tmp.name = tmp.name+'_1';
-	 			}
-		 		fashArr.push(tmp);
-	 	},800);
-	 	
-	 	//碰撞检测
-	 	function collideTest(x1,y1,w1,h1,x2,y2,w2,h2){
-	 		var r1 = x1+w1;
-	 		var b1 = y1+h1;
-	 		
-	 		var r2 = x2+w2;
-	 		var b2 = y2+h2;
-	 		
-	 		if(x1>r2 || r1<x2 || b1<y2 || y1>b2){
-	 			return false;
-	 		}else{
-	 			return true;
-	 		}
-	 		
-	 	}
-	 	function getInteger(num){
-	 		var intgerArr = [];
-		 	for(var i=0;i<String(intger).length;i++){
-		 		intgerArr.push({
-		 			old:Number(String(intger)[i])*53,
-		 			curPoy:0
-		 		});
-		 	}
-		 	intger = parseFloat(intger)+num;
-		 	for(i=String(intger).length;i<6;i++){
-		 		intger = '0'+intger;
-		 	}
-		 	for(i=0;i<intgerArr.length;i++){
-		 		intgerArr[i].number = Number(String(intger)[i])*53;
-		 	}
-		 	return intgerArr;
-	 	}
-	 }
+			},
+			ini:function(oParent,num){
+				this.num = num;
+				this.oParent = oParent;
+				var gk = this.gk[num];
+				this.createMap(gk);
+				var self = this;
+				onkeyup = function(ev){
+					var oEvent = ev || event;
+					switch(oEvent.keyCode){
+						case 37://left
+							self.oP.className = 'person2';
+							self.personRun({x:-1,y:0});
+						break;
+						case 65://left
+							self.oP.className = 'person2';
+							self.personRun({x:-1,y:0});
+						break;
+						case 38://up
+							self.oP.className = 'person1';
+							self.personRun({x:0,y:-1});
+						break;
+						case 87://up
+							self.oP.className = 'person1';
+							self.personRun({x:0,y:-1});
+						break;
+						case 39://right
+							self.oP.className = 'person4';
+							self.personRun({x:1,y:0});
+						break;
+						case 68://right
+							self.oP.className = 'person4';
+							self.personRun({x:1,y:0});
+						break;
+						case 40://down
+							self.oP.className = 'person3';
+							self.personRun({x:0,y:1});
+						break;
+						case 83://down
+							self.oP.className = 'person3';
+							self.personRun({x:0,y:1});
+						break;
+						case 81://上一步
+							self.backPrevStep();
+						break;
+					}
+				}
+			}
+		}
+		BoxYouXi.ini(document.getElementById('yxbox'),0);
 	</script>
 </body>
 </html>
