@@ -29,11 +29,33 @@
     
     
     <entry>
+      <title>裕华果蔬得奖</title>
+      <link href="/awards/index.html"/>
+      <url>/awards/index.html</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>裕华果蔬合作</title>
       <link href="/cooperation/index.html"/>
       <url>/cooperation/index.html</url>
       
         <content type="html"><![CDATA[<h2 id="🤝🏆合作伙伴及荣誉"><a href="#🤝🏆合作伙伴及荣誉" class="headerlink" title="🤝🏆合作伙伴及荣誉"></a>🤝🏆合作伙伴及荣誉</h2><p>2020年3月份，国家防伪工程技术研究中心产品追溯委员会，授予：莱阳市裕华果蔬种植农民专业合作社，产品可追溯单位。<br><img src="/cooperation/images/index/image38.png" alt="image38"></p><br><p>2023年11月份，中国科技会，授予：裕华秋月梨基地，功能农产品示范基地。<br><img src="/cooperation/images/index/image34.png" alt="image34"></p><br><p>2024年8月份，中国国际科技促进会科技传播分会、山西省专家学者协会、山东省创新战略研究院，授予莱阳市裕华果蔬种植农民专业合作社，秋月梨标准化生产示范基地。<br><img src="/cooperation/images/index/image35.png" alt="image35"></p><p><img src="/cooperation/images/index/image36.png" alt="image36"></p><p><img src="/cooperation/images/index/image40.png" alt="image40"></p><p><img src="/cooperation/images/index/image42.png" alt="image42"></p><p><img src="/cooperation/images/index/image43.png" alt="image43"></p><p><img src="/cooperation/images/index/image47.png" alt="image47"></p><p><img src="/cooperation/images/index/image45.png" alt="image45"></p><p><img src="/cooperation/images/index/image46.png" alt="image46"></p><p><img src="/cooperation/images/index/image37.png" alt="image37"></p><p><img src="/cooperation/images/index/image39.png" alt="image39"></p>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
+      <link href="/js/search.js"/>
+      <url>/js/search.js</url>
+      
+        <content type="html"><![CDATA[document.addEventListener('DOMContentLoaded', () => {    const $searchInput = document.getElementById('search-input');    const $searchResults = document.getElementById('search-results');      fetch('/search.xml')      .then(res => res.text())      .then(data => {        const parser = new DOMParser();        const xmlDoc = parser.parseFromString(data, "text/xml");        const items = xmlDoc.getElementsByTagName('item');          $searchInput.addEventListener('input', (e) => {          const query = e.target.value.trim().toLowerCase();          $searchResults.innerHTML = '';            if (query.length > 1) {            Array.from(items).forEach(item => {              const title = item.querySelector('title').textContent;              const content = item.querySelector('content').textContent;              const url = item.querySelector('url').textContent;                            if (title.toLowerCase().includes(query) || content.toLowerCase().includes(query)) {                const li = document.createElement('li');                li.innerHTML = `                  <a href="${url}">                    <div class="search-result-title">${title}</div>                    <div class="search-result-excerpt">${content.substring(0, 100)}...</div>                  </a>                `;                $searchResults.appendChild(li);              }            });          }        });      });  });]]></content>
       
     </entry>
     
@@ -51,28 +73,6 @@
     
     
     <entry>
-      <title>裕华果蔬得奖</title>
-      <link href="/awards/index.html"/>
-      <url>/awards/index.html</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>裕华果蔬资质</title>
-      <link href="/qualifications/index.html"/>
-      <url>/qualifications/index.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="📜-出口资质权威认证"><a href="#📜-出口资质权威认证" class="headerlink" title="📜 出口资质权威认证"></a>📜 <strong>出口资质权威认证</strong></h2><p>2024年7月经青岛海关技术中心检测，秋月梨通过<strong>无有害物质检测</strong>，符合欧美出口标准，成功取得美国备案基地资质（备案号4201GY0106）；同年10月与全球零售巨头<strong>美国开市客（Costco）超市</strong>达成合作，实现秋月梨直供北美高端市场。</p><br><p><img src="/qualifications/images/index/1746602745791.png" alt="1746602745791"></p><br><p><img src="/qualifications/images/index/1746602758355.png" alt="1746602758355"></p>]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>裕华果蔬产品</title>
       <link href="/products/index.html"/>
       <url>/products/index.html</url>
@@ -84,11 +84,11 @@
     
     
     <entry>
-      <title></title>
-      <link href="/js/search.js"/>
-      <url>/js/search.js</url>
+      <title>裕华果蔬资质</title>
+      <link href="/qualifications/index.html"/>
+      <url>/qualifications/index.html</url>
       
-        <content type="html"><![CDATA[document.addEventListener('DOMContentLoaded', () => {    const $searchInput = document.getElementById('search-input');    const $searchResults = document.getElementById('search-results');      fetch('/search.xml')      .then(res => res.text())      .then(data => {        const parser = new DOMParser();        const xmlDoc = parser.parseFromString(data, "text/xml");        const items = xmlDoc.getElementsByTagName('item');          $searchInput.addEventListener('input', (e) => {          const query = e.target.value.trim().toLowerCase();          $searchResults.innerHTML = '';            if (query.length > 1) {            Array.from(items).forEach(item => {              const title = item.querySelector('title').textContent;              const content = item.querySelector('content').textContent;              const url = item.querySelector('url').textContent;                            if (title.toLowerCase().includes(query) || content.toLowerCase().includes(query)) {                const li = document.createElement('li');                li.innerHTML = `                  <a href="${url}">                    <div class="search-result-title">${title}</div>                    <div class="search-result-excerpt">${content.substring(0, 100)}...</div>                  </a>                `;                $searchResults.appendChild(li);              }            });          }        });      });  });]]></content>
+        <content type="html"><![CDATA[<h2 id="📜-出口资质权威认证"><a href="#📜-出口资质权威认证" class="headerlink" title="📜 出口资质权威认证"></a>📜 <strong>出口资质权威认证</strong></h2><p>2024年7月经青岛海关技术中心检测，秋月梨通过<strong>无有害物质检测</strong>，符合欧美出口标准，成功取得美国备案基地资质（备案号4201GY0106）；同年10月与全球零售巨头<strong>美国开市客（Costco）超市</strong>达成合作，实现秋月梨直供北美高端市场。</p><br><p><img src="/qualifications/images/index/1746602745791.png" alt="1746602745791"></p><br><p><img src="/qualifications/images/index/1746602758355.png" alt="1746602758355"></p>]]></content>
       
     </entry>
     
