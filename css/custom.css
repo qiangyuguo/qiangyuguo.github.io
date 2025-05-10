@@ -1,0 +1,26 @@
+/* 搜索框增强 */
+#search-input {
+    width: 300px;
+    padding: 12px;
+    border: 2px solid #4CAF50;
+    border-radius: 25px;
+  }
+  
+  /* 搜索结果样式 */
+  #search-results {
+    position: absolute;
+    width: 300px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 999;
+  }
+  
+  .search-result-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .search-result-excerpt {
+    color: #666;
+    font-size: 0.9em;
+  }
